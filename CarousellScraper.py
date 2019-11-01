@@ -21,7 +21,7 @@ class CarousellScraper(BaseScraper):
     def parse_listing(self, html):
         soup = BeautifulSoup(html, 'html.parser')
         item = soup.find("meta", property="og:title")
-        item_name = (item["content"]).replace(",", " ")
+        item_name = (item["content"])
         price = soup.find("meta", attrs={"name": "twitter:data1"})
         actual_price = (price.attrs.get('content'))[2:]
 

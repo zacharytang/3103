@@ -25,7 +25,7 @@ class WriterThread(multiprocessing.Process):
                         output_file.write("Item,Price (SGD$),Website")
 
                     item, price, website = self.to_write.get(timeout=10)
-                    output_file.write("\n{},{},{}".format(item, price, website))
+                    output_file.write("\n{},{},{}".format(item.replace(",", " "), price, website))
                     # flush output to file
                     # TODO: change to more reasonable strategy, flushing every line is expensive
                     output_file.flush()
@@ -51,6 +51,7 @@ def start_scraper(keyword):
     scraper_list.append(Qoo10Scraper(keyword, to_write))
     scraper_list.append(CarousellScraper(keyword, to_write))
     scraper_list.append(LazadaScraper(keyword, to_write))
+    scraper_list.append(AmazonScraper(keyword, to_write))
 
     for scraper in scraper_list:
         scraper.start()

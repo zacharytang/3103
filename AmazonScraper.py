@@ -24,7 +24,6 @@ class AmazonScraper(BaseScraper):
         if price is None and item is None:
             return
         item = item.text.strip()
-        item = item.replace(",", "")
         price = '%.2f' % float(price.text.replace('$', ''))
 
         print("Item: {}, Price: ${}, From: {}".format(item, price, self.website))
