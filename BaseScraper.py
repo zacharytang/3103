@@ -69,7 +69,6 @@ class BaseScraper(Thread):
             res = requests.get(url, headers=headers, timeout=10)
             return res
         except requests.RequestException:
-            print(self.to_write)
             return
  
     def run(self):

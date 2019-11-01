@@ -6,6 +6,8 @@ from threading import Thread
 
 from Qoo10Scraper import Qoo10Scraper
 from CarousellScraper import CarousellScraper
+from LazadaScraper import LazadaScraper
+from AmazonScraper import AmazonScraper
 
 def get_program_runtime():
     return 5*60
@@ -25,7 +27,7 @@ class WriterThread(multiprocessing.Process):
                         output_file.write("Item,Price (SGD$),Website")
 
                     item, price, website = self.to_write.get(timeout=10)
-                    output_file.write("\n{},{},{}".format(item.replace(",", " "), price, website))
+                    output_file.write("\n{},{},{}".format(item.replace(",", ""), str(price).replace(",", ""), website))
                     # flush output to file
                     # TODO: change to more reasonable strategy, flushing every line is expensive
                     output_file.flush()

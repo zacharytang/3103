@@ -21,7 +21,7 @@ class AmazonScraper(BaseScraper):
         soup = BeautifulSoup(html, 'lxml') 
         item = soup.find("span", id="productTitle")
         price = soup.find(id="priceblock_ourprice")
-        if price is None and item is None:
+        if price is None or item is None:
             return
         item = item.text.strip()
         price = '%.2f' % float(price.text.replace('$', ''))
