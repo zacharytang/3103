@@ -10,7 +10,7 @@ from LazadaScraper import LazadaScraper
 from AmazonScraper import AmazonScraper
 
 def get_program_runtime():
-    return 5*60
+    return 2*60
 
 class WriterThread(multiprocessing.Process):
     def __init__(self, to_write):
@@ -21,20 +21,33 @@ class WriterThread(multiprocessing.Process):
         # TODO: write to CSV
         with open("scraper_output.csv", "w") as output_file:
             i = 1
+            min_price = 999999999999
             while True:
                 try:
                     if i == 1:
                         output_file.write("Item,Price (SGD$),Website")
 
                     item, price, website = self.to_write.get(timeout=10)
-                    output_file.write("\n{},{},{}".format(item.replace(",", ""), str(price).replace(",", ""), website))
+                    price = str(price).replace(",","")
+                    if float(price) < min_price and float(price) > 1.0:
+                        min_price = float(price)
+                        cheapest_item = item
+                        cheapest_site = website
+
+                    print("Number of listings scraped: {}".format(i), end='\r')
+                    sys.stdout.flush()
+
+                    output_file.write("\n{},{},{}".format(item.replace(",", ""), price, website))
                     # flush output to file
                     # TODO: change to more reasonable strategy, flushing every line is expensive
-                    output_file.flush()
-                    os.fsync(output_file.fileno())
+                    if i % 10 == 1:
+                        output_file.flush()
+                        os.fsync(output_file.fileno())
                     i += 1
                 except Empty:
-                    print("Writing queue empty, exiting")
+                    print("Number of listings scraped: {}".format(i))
+                    print("Cheapest item found on {}: {}, ${}".format(cheapest_site, cheapest_item, min_price))
+                    print("Writing queue empty, exiting program. Output written to scraper_output.csv")
                     return
                 except Exception as e:
                     print(e)
@@ -42,6 +55,9 @@ class WriterThread(multiprocessing.Process):
 
 
 def start_scraper(keyword):
+    print("Starting search for: {}".format(keyword))
+    print("Running scraper for {}s\n".format(get_program_runtime()))
+
     # initialize write queue, should be passed to each scraper
     to_write = multiprocessing.Queue()
     writer_thread = WriterThread(to_write)

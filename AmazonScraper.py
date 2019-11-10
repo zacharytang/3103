@@ -26,5 +26,4 @@ class AmazonScraper(BaseScraper):
         item = item.text.strip()
         price = '%.2f' % float(price.text.replace('$', ''))
 
-        print("Item: {}, Price: ${}, From: {}".format(item, price, self.website))
         self.to_write.put((item, price, self.website))

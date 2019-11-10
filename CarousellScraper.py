@@ -25,5 +25,4 @@ class CarousellScraper(BaseScraper):
         price = soup.find("meta", attrs={"name": "twitter:data1"})
         actual_price = (price.attrs.get('content'))[2:]
 
-        print("Item: {}, Price: ${}, From: {}".format(item_name, actual_price, self.website))
         self.to_write.put((item_name, actual_price, self.website))

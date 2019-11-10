@@ -48,5 +48,4 @@ class LazadaScraper(BaseScraper):
         data = json.loads(data)
         price = data["offers"]["price"]
 
-        print("Item: {}, Price: ${}, From: {}".format(item, price, self.website))
         self.to_write.put((item, price, self.website))

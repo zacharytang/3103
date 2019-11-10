@@ -23,5 +23,4 @@ class Qoo10Scraper(BaseScraper):
         item = soup.find("h2", {"id": "goods_name"}).text.strip()
         price = soup.find_all(attrs={"data-price": True})[0]["data-price"]
 
-        print("Item: {}, Price: ${}, From: {}".format(item, price, self.website))
         self.to_write.put((item, price, self.website))
