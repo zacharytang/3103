@@ -1,3 +1,4 @@
+import csv
 import os
 import sys
 import multiprocessing
@@ -74,6 +75,16 @@ def start_scraper(keyword):
     for scraper in scraper_list:
         scraper.start()
 
+def sort_output():    
+    with open('scraper_output.csv', 'r', newline='') as f_input:
+        csv_input = csv.DictReader(f_input)
+        data = sorted(csv_input, key=lambda row: row['Price (SGD$)'])
+
+    with open('scraper_output_sorted.csv', 'w', newline='') as f_output:    
+        csv_output = csv.DictWriter(f_output, fieldnames=csv_input.fieldnames)
+        csv_output.writeheader()
+        csv_output.writerows(data)
+
 if __name__ == '__main__':
     if len(sys.argv) != 2:
         print("Usage: project_main.py <keyword>")
@@ -89,3 +100,5 @@ if __name__ == '__main__':
         # terminate "main" thread
         p.terminate()
         p.join()
+
+    sort_output()
