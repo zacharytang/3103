@@ -22,7 +22,7 @@ class BaseScraper(Thread):
 
     def parse_search_page(self, response):
         if not (response and response.status_code == 200):
-            print("Invalid search URL")
+            #print("Invalid search URL")
             sys.exit(1)
 
         html = response.text
