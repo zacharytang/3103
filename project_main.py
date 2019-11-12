@@ -9,6 +9,7 @@ from Qoo10Scraper import Qoo10Scraper
 from CarousellScraper import CarousellScraper
 from LazadaScraper import LazadaScraper
 from AmazonScraper import AmazonScraper
+from BukalapakScraper import BukalapakScraper
 
 def get_program_runtime():
     return 2*60
@@ -35,8 +36,7 @@ class WriterThread(multiprocessing.Process):
                         cheapest_item = item
                         cheapest_site = website
 
-                    print("Number of listings scraped: {}".format(i), end='\r')
-                    sys.stdout.flush()
+                    print("Cheapest item found on {:<10}: {:<120}, ${: <.1f}".format(cheapest_site[:10], cheapest_item[:120], min_price), end='\r', flush=True)
 
                     output_file.write("\n{},{},{}".format(item.replace(",", ""), price, website))
                     # flush output to file
@@ -46,7 +46,7 @@ class WriterThread(multiprocessing.Process):
                         os.fsync(output_file.fileno())
                     i += 1
                 except Empty:
-                    print("Number of listings scraped: {}".format(i))
+                    print("\n\nNumber of listings scraped: {}".format(i))
                     print("Cheapest item found on {}: {}, ${}".format(cheapest_site, cheapest_item, min_price))
                     print("Writing queue empty, exiting program. Output written to scraper_output.csv")
                     return
@@ -71,6 +71,7 @@ def start_scraper(keyword):
     scraper_list.append(CarousellScraper(keyword, to_write))
     scraper_list.append(LazadaScraper(keyword, to_write))
     scraper_list.append(AmazonScraper(keyword, to_write))
+    #scraper_list.append(BukalapakScraper(keyword, to_write))
 
     for scraper in scraper_list:
         scraper.start()
